@@ -15,8 +15,10 @@ This is a static site — no build step. Import the repo into Vercel and it serv
 - Natural-language expense capture
 - **Voice capture** — speak an expense (e.g. "650 Ola ride to a SaaS meetup") and the details are transcribed and parsed automatically. Free and browser-native (Web Speech API); best in Chrome/Edge, needs an internet connection.
 - Editable category, amount, vendor, and date suggestions
+- Delete any expense (including the sample/demo data — a one-click "Remove demo data" clears all seed entries)
 - Receipt-upload interface
-- Category budgets and spending guardrails
+- Editable category budgets: add, update, or delete budget categories; new categories flow into the expense form automatically. Deleting a category is blocked while expenses still use it.
+- Spending guardrails
 - Cash and runway dashboard
 - **Excel export** — one click downloads an `.xlsx` workbook with a **Summary** sheet (category × month pivot with totals) plus **one sheet per month**, where transactions are grouped by expenditure type with per-category subtotals and a month total.
 
