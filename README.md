@@ -2,9 +2,13 @@
 
 A manual-first finance tracker for bootstrapped startups.
 
-Open `outputs/ledgerly-mvp.html` in a browser to use the current prototype. Expense entries are saved in the browser's local storage in this version.
+Open `index.html` in a browser to use the current prototype. Expense entries are saved in the browser's local storage in this version.
 
-> **Note on voice input:** voice capture uses the browser's Web Speech API, which only runs in a *secure context*. Serve the file over `http://localhost` (e.g. `cd outputs && python3 -m http.server`) or from an `https://` deployment — opening the file directly as `file://` disables the microphone. Excel export works either way.
+> **Note on voice input:** voice capture uses the browser's Web Speech API, which only runs in a *secure context*. Serve the file over `http://localhost` (run `python3 -m http.server` from the repo root) or from an `https://` deployment — opening the file directly as `file://` disables the microphone. Excel export works either way.
+
+## Deploying to Vercel
+
+This is a static site — no build step. Import the repo into Vercel and it serves `index.html` at the root (a `vercel.json` is included to pin static behaviour and add basic security headers). The resulting `https://` URL is a secure context, so **voice capture works out of the box** on the deployed site.
 
 ## Current capabilities
 
