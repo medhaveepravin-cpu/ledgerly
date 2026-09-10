@@ -19,7 +19,7 @@ This is a static site — no build step. Import the repo into Vercel and it serv
 - Receipt-upload interface
 - Editable category budgets: add, update, or delete budget categories; new categories flow into the expense form automatically. Deleting a category is blocked while expenses still use it.
 - Spending guardrails
-- Cash and runway dashboard
+- Cash and runway dashboard: **editable cash on hand** (click *Edit*). Logging a real expense deducts from it automatically, and **runway recalculates from your actual average monthly spend**. "This month's spend" is the sum of logged expenses and is intentionally independent of the cash balance.
 - **Excel export** — one click downloads an `.xlsx` workbook with a **Summary** sheet (category × month pivot with totals) plus **one sheet per month**, where transactions are grouped by expenditure type with per-category subtotals and a month total.
 
 ## Export format
