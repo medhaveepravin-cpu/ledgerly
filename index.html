@@ -59,14 +59,14 @@ async function dbSaveCash(v){const {error}=await sb.from('settings').upsert({wor
 
 /* ---------- Workspace resolution, seeding/migration, load ---------- */
 async function ensureWorkspace(user){
-  const {data:mems,error}=await sb.from('workspace_members').select('workspace_id').eq('user_id',user.id).limit(1);
+  // Idempotent + race-safe: one DB function resolves-or-creates exactly one
+  // workspace per user (see get_or_create_my_workspace in supabase-schema.sql).
+  // This is what prevents duplicate workspaces / double-migration.
+  const {data,error}=await sb.rpc('get_or_create_my_workspace');
   if(error)throw error;
-  if(mems&&mems.length)return {id:mems[0].workspace_id,created:false};
-  const {data:ws,error:e1}=await sb.from('workspaces').insert({name:'My startup',owner_id:user.id}).select('id').single();
-  if(e1)throw e1;
-  const {error:e2}=await sb.from('workspace_members').insert({workspace_id:ws.id,user_id:user.id,role:'owner'});
-  if(e2)throw e2;
-  return {id:ws.id,created:true};
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row||!row.workspace_id)throw new Error('Could not resolve a workspace.');
+  return {id:row.workspace_id,created:!!row.created};
 }
 async function seedNewWorkspace(){
   // Bring up anything captured locally before sign-up; otherwise load the demo starter.
@@ -142,6 +142,9 @@ async function onSignedIn(session){
     workspaceId=ws.id;
     if(ws.created)await seedNewWorkspace();
     await loadData();
+    // Once signed in, Supabase is the source of truth. Drop any legacy local
+    // copies so a stale per-browser cache can't resurface or re-migrate later.
+    try{localStorage.removeItem('ledgerly-expenses');localStorage.removeItem('ledgerly-budgets');localStorage.removeItem('ledgerly-cash');}catch(_){}
     render();
     showOverlay(false);
   }catch(err){booted=false;authMsg('Could not load your data: '+(err.message||err),true);showOverlay(true);}
