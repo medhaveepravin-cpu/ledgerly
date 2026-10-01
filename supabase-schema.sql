@@ -126,3 +126,57 @@ drop policy if exists set_all on public.settings;
 create policy set_all on public.settings for all
   using (public.is_workspace_member(workspace_id))
   with check (public.is_workspace_member(workspace_id));
+
+-- ------------------------------------------------------------------
+-- Idempotent workspace bootstrap.
+-- At most ONE auto-created workspace per owner, and a single race-safe
+-- function the client calls on every sign-in. This prevents the duplicate
+-- workspaces / double-migration that a client-side check-then-insert allowed.
+--
+-- NOTE for an EXISTING project: if a user already owns more than one
+-- workspace, delete the extras FIRST — otherwise the unique index below fails.
+-- ------------------------------------------------------------------
+create unique index if not exists workspaces_owner_uniq on public.workspaces(owner_id);
+
+create or replace function public.get_or_create_my_workspace()
+returns table(workspace_id uuid, created boolean)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  ws uuid;
+  made boolean := false;
+begin
+  -- Already a member of one? Return the earliest (deterministic).
+  select m.workspace_id into ws
+  from public.workspace_members m
+  where m.user_id = auth.uid()
+  order by m.created_at asc
+  limit 1;
+
+  if ws is not null then
+    workspace_id := ws; created := false; return next; return;
+  end if;
+
+  -- None yet: create one. on conflict handles a concurrent sign-in racing us.
+  insert into public.workspaces(name, owner_id)
+  values ('My startup', auth.uid())
+  on conflict (owner_id) do nothing
+  returning id into ws;
+
+  if ws is null then
+    select id into ws from public.workspaces where owner_id = auth.uid();
+  else
+    made := true;
+  end if;
+
+  insert into public.workspace_members(workspace_id, user_id, role)
+  values (ws, auth.uid(), 'owner')
+  on conflict (workspace_id, user_id) do nothing;
+
+  workspace_id := ws; created := made; return next;
+end;
+$$;
+
+grant execute on function public.get_or_create_my_workspace() to authenticated;
