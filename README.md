@@ -2,7 +2,9 @@
 
 A manual-first finance tracker for bootstrapped startups.
 
-Open `index.html` in a browser to use the current prototype. Expense entries are saved in the browser's local storage in this version.
+Open `index.html` in a browser to use the prototype. The app now has **accounts**: users sign in and each account's data is stored in Supabase, scoped to their own workspace and protected by Postgres Row-Level Security — so sharing the link does **not** expose anyone's data.
+
+> **One-time setup required:** add your Supabase project URL + anon key to `index.html` and run `supabase-schema.sql`. See **[SETUP.md](SETUP.md)**. Until that's done, the app shows a "not configured yet" notice on the sign-in screen.
 
 > **Note on voice input:** voice capture uses the browser's Web Speech API, which only runs in a *secure context*. Serve the file over `http://localhost` (run `python3 -m http.server` from the repo root) or from an `https://` deployment — opening the file directly as `file://` disables the microphone. Excel export works either way.
 
@@ -12,6 +14,7 @@ This is a static site — no build step. Import the repo into Vercel and it serv
 
 ## Current capabilities
 
+- **Accounts & private data** — email/password or magic-link sign-in (Supabase Auth). Each account gets its own workspace; Row-Level Security guarantees you can only read your own rows. On first sign-in, any data you'd captured locally before is migrated into your workspace. See [SETUP.md](SETUP.md). Structured so adding a co-founder later is a single membership row — no schema change.
 - Natural-language expense capture
 - **Voice capture** — speak an expense (e.g. "650 Ola ride to a SaaS meetup") and the details are transcribed and parsed automatically. Free and browser-native (Web Speech API); best in Chrome/Edge, needs an internet connection.
 - Editable category, amount, vendor, and date suggestions
@@ -31,6 +34,10 @@ The exported workbook contains:
 
 Export uses [SheetJS](https://sheetjs.com/) loaded from a CDN, so exporting requires an internet connection.
 
-## Before team use
+## Team use
 
-The current prototype has no shared backend or sign-in. Deploying a shared version requires a database and authentication layer so both founders see the same data.
+Sign-in and per-user data are in place (Supabase + RLS). The data model is already
+keyed by workspace, so a shared founder view is just adding your co-founder to your
+workspace — see the "Adding your co-founder later" section in [SETUP.md](SETUP.md).
+A polished in-app invite flow (an `invites` table + an "accept invite" button) is
+the natural next step.
