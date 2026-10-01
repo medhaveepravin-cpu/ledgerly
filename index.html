@@ -23,8 +23,8 @@
    3. Run supabase-schema.sql in the Supabase SQL editor (see SETUP.md).
    The anon key is MEANT to be public in client code — Row-Level Security is what
    protects the data, so each account can only ever read its own workspace. */
-const SUPABASE_URL='https://YOUR_PROJECT.supabase.co';
-const SUPABASE_ANON_KEY='YOUR_ANON_KEY';
+const SUPABASE_URL='https://vjscnrhcdrddijhibanz.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_sKa_zvumGf4QLpYmFw-zBw_qJKM9rW6';
 const CONFIGURED=!!window.supabase&&!/YOUR_/.test(SUPABASE_URL)&&!/YOUR_/.test(SUPABASE_ANON_KEY);
 const sb=CONFIGURED?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
 
