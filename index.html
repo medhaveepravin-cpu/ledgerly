@@ -32,10 +32,10 @@ const sb=CONFIGURED?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
 const DEFAULT_BUDGETS={'AI & tools':20000,'GTM':20000,'Events':8000,'Meals':6000,'Contractors':30000,'Admin':5000,'Other':5000};
 const DEFAULT_CASH=482000;
 const DEMO_EXPENSES=[
-{vendor:'AI & software subscriptions',amount:15800,category:'AI & tools',date:'2026-09-07',payment:'Credit card',note:'Monthly subscriptions',seed:true},
-{vendor:'Founder events & travel',amount:7350,category:'Events',date:'2026-09-08',payment:'UPI',note:'September events',seed:true},
-{vendor:'LinkedIn campaign',amount:11600,category:'GTM',date:'2026-09-05',payment:'Credit card',note:'Founder-led GTM',seed:true},
-{vendor:'Customer meetings',amount:3700,category:'Meals',date:'2026-09-03',payment:'UPI',note:'September meals',seed:true}];
+{vendor:'[SAMPLE] Acme SaaS Co.',amount:11111,category:'AI & tools',date:'2026-09-07',payment:'Credit card',note:'Example row — safe to delete',seed:true},
+{vendor:'[SAMPLE] Placeholder Ads Inc.',amount:22222,category:'GTM',date:'2026-09-05',payment:'Credit card',note:'Example row — safe to delete',seed:true},
+{vendor:'[SAMPLE] Demo Travel Ltd.',amount:3333,category:'Events',date:'2026-09-08',payment:'UPI',note:'Example row — safe to delete',seed:true},
+{vendor:'[SAMPLE] Test Café',amount:4444,category:'Meals',date:'2026-09-03',payment:'UPI',note:'Example row — safe to delete',seed:true}];
 
 /* In-memory state — populated from Supabase after sign-in */
 let budgets={};
